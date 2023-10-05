@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Text; // For the string builder
 class DirectoryNode
 {
     private string name;
@@ -67,7 +67,7 @@ class Program
     {
         // Read commands from the file into a string array
         string[] cmds = System.IO.File.ReadAllLines(@"C:\Users\Tom\Documents\Advent\Day-7-Directories\Day-7-Directories\data_test.txt");
-
+        //string[] cmds = System.IO.File.ReadAllLines(@"C:\Users\Tom\Documents\Advent\Day-7-Directories\Day-7-Directories\data_full.txt");
         // Starting in home directory
         string currentDir = "";
         DirectoryNode node = new DirectoryNode("/", true, "");
@@ -91,7 +91,18 @@ class Program
                     {
                         // $ cd xyz
                         string dir = cmd.Substring(5);
-                        currentDir = dir;
+
+                        // Special case for first command
+                        if (dir == "/")
+                        {
+                            currentDir = dir;
+                        }
+                        // Change to a directory
+                        else
+                        {
+                            // Use the format currentDirectory/newDirectory
+                            currentDir = currentDir + "/" + dir;
+                        }
                     }
                 }
             }
@@ -103,17 +114,25 @@ class Program
                 {
                     // Making a new directory
                     name = cmd.Substring(4); // After "dir " to end is the name
+                    // New node params
+                    // DirectoryName, and the parent is currentDir
                     node = new DirectoryNode(name, true, currentDir);
-                    fromNameToDirectory.Add(name, node); // Create new node in the dictionary
+                    // Determine directory's full name
+                    string nameAndPath = currentDir + "/" + name;
+                    // The full name is needed in the dictionary
+                    fromNameToDirectory.Add(nameAndPath, node); // Create new node in the dictionary
+                    // Current directory's full name is used in order to add the child 
                     fromNameToDirectory[currentDir].AddChild(name);
                 }
+
                 else // Creating a file
                 {
                     string[] sizeName = cmd.Split(" ");
                     int size = Convert.ToInt32(sizeName[0]);
                     name = sizeName[1];
                     node = new DirectoryNode(name, false, currentDir, size);
-                    fromNameToDirectory.Add(name, node); // Create new node in the dictionary
+                    // Current directory is full name
+                    // Child name is shortened
                     fromNameToDirectory[currentDir].AddChild(name);
 
                     // Add the file size to the parents

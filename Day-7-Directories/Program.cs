@@ -66,8 +66,8 @@ class Program
     public static void ParseFileIntoTree(Dictionary<string, DirectoryNode> fromNameToDirectory)
     {
         // Read commands from the file into a string array
-        string[] cmds = System.IO.File.ReadAllLines(@"C:\Users\Tom\Documents\Advent\Day-7-Directories\Day-7-Directories\data_test.txt");
-        //string[] cmds = System.IO.File.ReadAllLines(@"C:\Users\Tom\Documents\Advent\Day-7-Directories\Day-7-Directories\data_full.txt");
+        //string[] cmds = System.IO.File.ReadAllLines(@"C:\Users\Tom\Documents\Advent\Day-7-Directories\Day-7-Directories\data_test.txt");
+        string[] cmds = System.IO.File.ReadAllLines(@"C:\Users\Tom\Documents\Advent\Day-7-Directories\Day-7-Directories\data_full.txt");
         // Starting in home directory
         string currentDir = "";
         DirectoryNode node = new DirectoryNode("/", true, "");

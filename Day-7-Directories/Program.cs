@@ -158,22 +158,31 @@ class Program
         // Populate data structure with data from text file
         ParseFileIntoTree(fromNameToDirectory);
 
-        // sum to answer challenge
-        int sumUpTo100000 = 0;
+        int totalUsedMemory = fromNameToDirectory["/"].GetSize();
+        int requiredFreeSpace = 30000000;
+        int diskSize = 70000000;
+        int diskUsed = diskSize - totalUsedMemory;
+        int minimumDirSize = requiredFreeSpace - diskUsed;
+
+        Console.WriteLine(String.Format("Using {0} of {1}", totalUsedMemory, diskSize));
+        Console.WriteLine(String.Format("Need to delete {0}", requiredFreeSpace));
+
+        // Need to delete one directory
+        // The smallest directory with at least minimumDirSize will be deleted to free up enough space
+        int sizeOfDirectoryToDelete = diskSize;
+
         // Check each file/directory
         foreach (KeyValuePair<string, DirectoryNode> pair in fromNameToDirectory)
         {
-            Console.WriteLine(String.Format("Directory {0} has {1} children and is {2} bits", pair.Key, pair.Value.NumberOfChildren(), pair.Value.GetSize()));
-            if ((pair.Value.IsFolder()) && (pair.Value.GetSize() <= 100000))
+            // If folder, big enough, and smaller than previous
+            if ((pair.Value.IsFolder()) && 
+                (pair.Value.GetSize() >= minimumDirSize) && 
+                (pair.Value.GetSize() < sizeOfDirectoryToDelete))
             {
-                sumUpTo100000 += pair.Value.GetSize();
-            }
-            List<string> children = pair.Value.GetChildren();
-            foreach (string child in children)
-            {
-                Console.WriteLine(String.Format("\t{0}", child));
+                Console.WriteLine(String.Format("{0} needed. New best option: {1}", minimumDirSize, pair.Value.GetSize()));
+                sizeOfDirectoryToDelete = pair.Value.GetSize();
             }
         }
-        Console.WriteLine(String.Format("The answer to the challenge is {0}", sumUpTo100000));
+        Console.WriteLine(String.Format("The folder to delete has a size of {0}", sizeOfDirectoryToDelete));
     }
 }
